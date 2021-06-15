@@ -2,5 +2,10 @@
     <string name="app_name">Goliath National Bank</string>
 
     <string name="dashboard_title">Stock Keeping Units</string>
+    <string name="dashboard_network_error">Failed to load data from server</string>
+    <string name="dashboard_network_error_button">Try again</string>
+
     <string name="transaction_detail_amount_title">Total balance</string>
+
+    <string name="cdescription_image">cdescription_image</string>
 </resources>

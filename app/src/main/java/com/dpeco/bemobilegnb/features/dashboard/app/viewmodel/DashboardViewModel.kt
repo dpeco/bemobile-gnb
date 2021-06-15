@@ -17,22 +17,26 @@ import java.io.Serializable
 class DashboardViewModel : ViewModel() {
 
     val transactions = MutableLiveData<List<Transaction>>()
-    val showProgress = MutableLiveData<Boolean>()
+    val showSpinner = MutableLiveData<Boolean>()
+    val showEmptyState = MutableLiveData<Boolean>()
 
-    fun getServiceData() {
-        showProgress.value = true
+    fun callServiceData() {
+        showSpinner()
         //async service calls + data management to get the data we want to display
         viewModelScope.launch {
             val conversionRatesResult = GetConversionRatesUseCase().invoke()
             val transactionsResult = GetTransactionsUseCase().invoke()
 
+            hideSpinner()
             if (!conversionRatesResult.isNullOrEmpty() && !transactionsResult.isNullOrEmpty()) {
-                showProgress.value = false
                 for (transaction in transactionsResult) {
                     transaction.totalAmountInEuro = MoneyConversionUtils.getTotalConversionAmount(transaction, conversionRatesResult, "EUR")
                     println("PRINTTEST.5.5.5 - Euro amount:  " + transaction.totalAmountInEuro)
                 }
                 transactions.postValue(transactionsResult)
+            } else {
+                // show empty state or error if we failed to get the information to work with
+                showEmptyState()
             }
         }
     }
@@ -41,5 +45,21 @@ class DashboardViewModel : ViewModel() {
         val intent = Intent(context, TransactionDetailActivity::class.java)
         intent.putExtra(AppConstants.INTENT_EXTRA_TRANSACTION, transactions.value?.get(position) as Serializable)
         context.startActivity(intent)
+    }
+
+    fun showSpinner() {
+        showSpinner.value = true
+    }
+
+    fun hideSpinner() {
+        showSpinner.value = false
+    }
+
+    fun showEmptyState() {
+        showEmptyState.value = true
+    }
+
+    fun hideEmptyState() {
+        showEmptyState.value = false
     }
 }

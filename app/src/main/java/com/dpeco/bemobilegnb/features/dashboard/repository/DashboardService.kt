@@ -1,31 +1,36 @@
 package com.dpeco.bemobilegnb.features.dashboard.repository
 
-import com.dpeco.bemobilegnb.features.dashboard.repository.entities.ApiConversionRate
-import com.dpeco.bemobilegnb.features.dashboard.repository.entities.ApiTransaction
+import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
+import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
+import com.dpeco.bemobilegnb.features.dashboard.repository.mappers.GetConversionRatesMapper
+import com.dpeco.bemobilegnb.features.dashboard.repository.mappers.GetTransactionsMapper
+import com.dpeco.bemobilegnb.retrofit.RetrofitProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 
 class DashboardService {
 
-    private fun getRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("http://quiet-stone-2094.herokuapp.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    suspend fun getConversionRates(): List<ApiConversionRate> {
+    suspend fun getConversionRates(): List<ConversionRate> {
         return withContext(Dispatchers.IO) {
-            val call = getRetrofit().create(DashboardRepository::class.java).getConversionRates()
-            call.body() ?: emptyList()
+            val mapper = GetConversionRatesMapper()
+            try {
+                val call = RetrofitProvider.provideRetrofit().create(DashboardRepository::class.java).getConversionRates()
+                call.body()?.let { mapper.parseConversionRates(it) } ?: emptyList()
+            } catch (e:Exception) {
+                emptyList()
+            }
         }
     }
-    suspend fun getTransactions(): List<ApiTransaction> {
+    suspend fun getTransactions(): List<Transaction> {
         return withContext(Dispatchers.IO) {
-            val call = getRetrofit().create(DashboardRepository::class.java).getTransactions()
-            call.body() ?: emptyList()
+            val mapper = GetTransactionsMapper()
+            try {
+                val call = RetrofitProvider.provideRetrofit().create(DashboardRepository::class.java).getTransactions()
+                call.body()?.let { mapper.parseTransactions(it) } ?: emptyList()
+            } catch (e: Exception) {
+                emptyList()
+            }
         }
     }
 }

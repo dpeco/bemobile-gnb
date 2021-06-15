@@ -1,11 +1,11 @@
-package com.dpeco.bemobilegnb.features.dashboard.usecases
+package com.dpeco.bemobilegnb.features.dashboard.repository.mappers
 
 import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
 import com.dpeco.bemobilegnb.features.dashboard.repository.entities.ApiConversionRate
 
 class GetConversionRatesMapper {
 
-    fun parseConversionRates(apiConversionRates: List<ApiConversionRate>): ArrayList<ConversionRate> {
+    fun parseConversionRates(apiConversionRates: List<ApiConversionRate>): List<ConversionRate> {
         val conversionRates: ArrayList<ConversionRate> = ArrayList()
 
         for (apiConversionRate in apiConversionRates) {

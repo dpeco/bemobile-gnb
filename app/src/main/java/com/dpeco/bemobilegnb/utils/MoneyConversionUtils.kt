@@ -2,9 +2,8 @@ package com.dpeco.bemobilegnb.utils
 
 import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
-import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class MoneyConversionUtils {
 
@@ -16,19 +15,19 @@ class MoneyConversionUtils {
          * @return Formatted result
          */
         fun getFormattedAmount(amount: Double): String {
-            val bigDecimal = BigDecimal(amount)
-            bigDecimal.round(MathContext(2, RoundingMode.HALF_EVEN))
-            return "%.2f".format(bigDecimal.toDouble())
+            val decimalFormat = DecimalFormat("0.00")
+            decimalFormat.roundingMode = RoundingMode.HALF_EVEN
+            return decimalFormat.format(amount)
         }
 
         /**
          * Returns the total amount from all the movements of a Transaction object in a single currency
          * @param transaction transaction object to calculate
-         * @param conversionRates ArrayList with all available conversion rates
+         * @param conversionRates List with all available conversion rates
          * @param to result currency we need
          * @return total amount in the desired currency
          */
-        fun getTotalConversionAmount(transaction: Transaction, conversionRates: ArrayList<ConversionRate>, to: String): Double {
+        fun getTotalConversionAmount(transaction: Transaction, conversionRates: List<ConversionRate>, to: String): Double {
             var totalAmountInEuros = 0.0;
             for (movement in transaction.movements) {
                 totalAmountInEuros += getConversionAmount(movement.amount, conversionRates, movement.currency, to)
@@ -40,12 +39,12 @@ class MoneyConversionUtils {
         /**
          * Converts an amount from one currency to another
          * @param amount amount
-         * @param conversionRates ArrayList with all available conversion rates
+         * @param conversionRates List with all available conversion rates
          * @param from result currency we have right now
          * @param to result currency we need
          * @return total amount in the desired currency
          */
-        fun getConversionAmount(amount: Double, conversionRates: ArrayList<ConversionRate>, from: String, to: String): Double {
+        fun getConversionAmount(amount: Double, conversionRates: List<ConversionRate>, from: String, to: String): Double {
             // In case, if current currency matches with desired return given amount
             if (to == from) {
                 return amount
@@ -56,7 +55,7 @@ class MoneyConversionUtils {
         /**
          * Private method for getConversionAmount logic, recursions to find an available route to the currency we want and obtain the conversion rate
          */
-        private fun getConversionRate(conversionRates: ArrayList<ConversionRate>, from: String, to: String, checkedRates: ArrayList<String>): Double {
+        private fun getConversionRate(conversionRates: List<ConversionRate>, from: String, to: String, checkedRates: ArrayList<String>): Double {
             //first step, get ConversionRates that match our "from"
             val matchingFromConversionRates = getMatchingFromConversionRates(conversionRates, from)
             //second step, attempt to find an option that matches "to"
@@ -83,7 +82,7 @@ class MoneyConversionUtils {
         /**
          * Private method for getConversionRate logic, filters conversionRates with desired from
          */
-        private fun getMatchingFromConversionRates(conversionRates: ArrayList<ConversionRate>, from: String): ArrayList<ConversionRate> {
+        private fun getMatchingFromConversionRates(conversionRates: List<ConversionRate>, from: String): List<ConversionRate> {
             val matchingConversionRates: ArrayList<ConversionRate> = ArrayList()
 
             for (conversionRate in conversionRates) {
@@ -97,7 +96,7 @@ class MoneyConversionUtils {
         /**
          * Private method for getConversionRate logic, filters conversionRates with desired to
          */
-        private fun getMatchingToConversionRates(conversionRates: ArrayList<ConversionRate>, to: String, checkedRates: ArrayList<String>): ArrayList<ConversionRate> {
+        private fun getMatchingToConversionRates(conversionRates: List<ConversionRate>, to: String, checkedRates: ArrayList<String>): List<ConversionRate> {
             val matchingConversionRates: ArrayList<ConversionRate> = ArrayList()
 
             for (conversionRate in conversionRates) {

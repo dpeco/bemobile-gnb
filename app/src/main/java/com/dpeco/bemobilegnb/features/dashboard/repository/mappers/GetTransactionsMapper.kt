@@ -1,4 +1,4 @@
-package com.dpeco.bemobilegnb.features.dashboard.usecases
+package com.dpeco.bemobilegnb.features.dashboard.repository.mappers
 
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import com.dpeco.bemobilegnb.features.dashboard.app.model.TransactionMovement
@@ -10,7 +10,7 @@ class GetTransactionsMapper {
      * Converts List<ApiTransaction> object from Service to ArrayList<Transaction> for our logic
      * Extra logic since Transaction is slightly modified from ApiTransaction to order data accordingly
      */
-    fun parseTransactions(apiTransactions: List<ApiTransaction>): ArrayList<Transaction> {
+    fun parseTransactions(apiTransactions: List<ApiTransaction>): List<Transaction> {
         val transactions: ArrayList<Transaction> = ArrayList()
 
         // go through every transaction from service call to our model

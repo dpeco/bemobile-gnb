@@ -6,7 +6,6 @@ import com.dpeco.bemobilegnb.features.dashboard.repository.DashboardService
 class GetConversionRatesUseCase {
 
     private val service = DashboardService()
-    private val mapper = GetConversionRatesMapper()
 
-    suspend operator fun invoke():ArrayList<ConversionRate> = mapper.parseConversionRates(service.getConversionRates())
+    suspend operator fun invoke():List<ConversionRate> = service.getConversionRates()
 }

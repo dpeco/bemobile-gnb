@@ -8,6 +8,10 @@ import com.dpeco.bemobilegnb.databinding.ActivityTransactionDetailBinding
 import com.dpeco.bemobilegnb.features.dashboard.app.adapter.TransactionMovementsAdapter
 import com.dpeco.bemobilegnb.features.dashboard.app.viewmodel.TransactionDetailViewModel
 
+/**
+ * Created by dpeco
+ * Extra activity to show in more detail every transaction received
+ */
 class TransactionDetailActivity: AppCompatActivity() {
 
     private lateinit var viewModel: TransactionDetailViewModel

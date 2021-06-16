@@ -4,31 +4,36 @@ import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import com.dpeco.bemobilegnb.features.dashboard.repository.mappers.GetConversionRatesMapper
 import com.dpeco.bemobilegnb.features.dashboard.repository.mappers.GetTransactionsMapper
-import com.dpeco.bemobilegnb.retrofit.RetrofitProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
 import java.lang.Exception
 
-class DashboardService {
+/**
+ * Created by dpeco
+ * Logic to call the methods from DashboardRepository in a IO thread and runs the mappers to convert response into our own models
+ * Does try/catch to retrieve the needed information and returns an empty list if fails in both cases
+ * Current drawback is that app doesn't really know why the list is empty for different error controls
+ */
+class DashboardService(val retrofit: Retrofit, val conversionRatesMapper: GetConversionRatesMapper, val transactionsMapper: GetTransactionsMapper) {
 
     suspend fun getConversionRates(): List<ConversionRate> {
-        //runs in IO thread
+        //runs in IO thread, does try/catch to retrieve the needed information and returns an empty list if fails
         return withContext(Dispatchers.IO) {
-            val mapper = GetConversionRatesMapper()
             try {
-                val call = RetrofitProvider.provideRetrofit().create(DashboardRepository::class.java).getConversionRates()
-                call.body()?.let { mapper.parseConversionRates(it) } ?: emptyList()
+                val call = retrofit.create(DashboardRepository::class.java).getConversionRates()
+                call.body()?.let { conversionRatesMapper.parseConversionRates(it) } ?: emptyList()
             } catch (e:Exception) {
                 emptyList()
             }
         }
     }
+
     suspend fun getTransactions(): List<Transaction> {
         return withContext(Dispatchers.IO) {
-            val mapper = GetTransactionsMapper()
             try {
-                val call = RetrofitProvider.provideRetrofit().create(DashboardRepository::class.java).getTransactions()
-                call.body()?.let { mapper.parseTransactions(it) } ?: emptyList()
+                val call = retrofit.create(DashboardRepository::class.java).getTransactions()
+                call.body()?.let { transactionsMapper.parseTransactions(it) } ?: emptyList()
             } catch (e: Exception) {
                 emptyList()
             }

@@ -6,6 +6,10 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
 
+/**
+ * Created by dpeco
+ * The app calls the .json extensions and uses retrofit2 for GET and Header annotations
+ */
 interface DashboardRepository {
 
     @GET("rates.json")

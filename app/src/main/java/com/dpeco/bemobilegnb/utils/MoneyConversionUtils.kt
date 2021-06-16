@@ -2,9 +2,15 @@ package com.dpeco.bemobilegnb.utils
 
 import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
+import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
+
+/**
+ * Created by dpeco
+ * Stores "static" utilities related with money (formatting and currency conversion)
+ */
 class MoneyConversionUtils {
 
     companion object {
@@ -14,10 +20,21 @@ class MoneyConversionUtils {
          * @param amount amount to format
          * @return Formatted result
          */
-        fun getFormattedAmount(amount: Double): String {
+        fun getFormattedAmountString(amount: Double): String {
             val decimalFormat = DecimalFormat("#,###,##0.00")
             decimalFormat.roundingMode = RoundingMode.HALF_EVEN
             return decimalFormat.format(amount)
+        }
+        /**
+         *
+         * Converts amount into a Double, with 2 decimals and RoundingMode.HALF_EVEN
+         * @param amount amount to format
+         * @return Formatted result
+         */
+        fun getFormattedAmountDouble(amount: Double): Double {
+            var decimal = BigDecimal(amount)
+            decimal = decimal.setScale(2, RoundingMode.HALF_EVEN)
+            return decimal.toDouble()
         }
 
         /**
@@ -30,10 +47,11 @@ class MoneyConversionUtils {
         fun getTotalConversionAmount(transaction: Transaction, conversionRates: List<ConversionRate>, to: String): Double {
             var totalAmountInEuros = 0.0;
             for (movement in transaction.movements) {
-                totalAmountInEuros += getConversionAmount(movement.amount, conversionRates, movement.currency, to)
+                val amountInEuro = getConversionAmount(movement.amount, conversionRates, movement.currency, to)
+                totalAmountInEuros += amountInEuro
             }
             transaction.totalAmountInEuro = totalAmountInEuros
-            return totalAmountInEuros
+            return getFormattedAmountDouble(totalAmountInEuros)
         }
 
         /**
@@ -49,7 +67,9 @@ class MoneyConversionUtils {
             if (to == from) {
                 return amount
             }
-            return amount * getConversionRate(conversionRates, from, to, ArrayList())
+
+            val conversionRate = getConversionRate(conversionRates, from, to, ArrayList())
+            return getFormattedAmountDouble(amount * conversionRate)
         }
 
         /**

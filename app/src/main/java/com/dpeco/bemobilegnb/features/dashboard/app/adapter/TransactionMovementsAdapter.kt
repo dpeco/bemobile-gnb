@@ -9,6 +9,9 @@ import com.dpeco.bemobilegnb.R
 import com.dpeco.bemobilegnb.features.dashboard.app.model.TransactionMovement
 import com.dpeco.bemobilegnb.utils.MoneyConversionUtils
 
+/**
+ * Created by dpeco
+ */
 class TransactionMovementsAdapter(private val transactions: List<TransactionMovement>): RecyclerView.Adapter<TransactionMovementsAdapter.TransactionMovementHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionMovementHolder {
@@ -30,7 +33,7 @@ class TransactionMovementsAdapter(private val transactions: List<TransactionMove
         fun setData(movement: TransactionMovement, position: Int, size:Int) {
             val adjustedPosition = position + 1
             val numberText = "$adjustedPosition/$size"
-            val amountText = MoneyConversionUtils.getFormattedAmount(movement.amount).toString() + " " + movement.currency
+            val amountText = MoneyConversionUtils.getFormattedAmountString(movement.amount).toString() + " " + movement.currency
             numberView.text = numberText
             amountView.text = amountText
         }

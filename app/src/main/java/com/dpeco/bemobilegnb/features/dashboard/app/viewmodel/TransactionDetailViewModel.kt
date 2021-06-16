@@ -9,6 +9,9 @@ import com.dpeco.bemobilegnb.features.dashboard.app.model.TransactionMovement
 import com.dpeco.bemobilegnb.utils.AppConstants
 import com.dpeco.bemobilegnb.utils.MoneyConversionUtils
 
+/**
+ * Created by dpeco
+ */
 class TransactionDetailViewModel: ViewModel() {
 
     val detailTitleText = MutableLiveData<String>()
@@ -22,7 +25,7 @@ class TransactionDetailViewModel: ViewModel() {
         if (bundle?.containsKey(AppConstants.INTENT_EXTRA_TRANSACTION) == true) {
             val transaction = bundle.getSerializable(AppConstants.INTENT_EXTRA_TRANSACTION) as Transaction
             detailTitleText.value = transaction.sku
-            balanceText.value = MoneyConversionUtils.getFormattedAmount(transaction.totalAmountInEuro)
+            balanceText.value = MoneyConversionUtils.getFormattedAmountString(transaction.totalAmountInEuro)
             transactionMovements.value = transaction.movements
         }
     }

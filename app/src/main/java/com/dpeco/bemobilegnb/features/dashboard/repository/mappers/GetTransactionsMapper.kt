@@ -4,12 +4,13 @@ import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import com.dpeco.bemobilegnb.features.dashboard.app.model.TransactionMovement
 import com.dpeco.bemobilegnb.features.dashboard.repository.entities.ApiTransaction
 
+/**
+ * Created by dpeco
+ * Converts List<ApiTransaction> object from Service to ArrayList<Transaction> for our logic
+ * Extra logic since Transaction is slightly modified from ApiTransaction to order data accordingly
+ */
 class GetTransactionsMapper {
 
-    /**
-     * Converts List<ApiTransaction> object from Service to ArrayList<Transaction> for our logic
-     * Extra logic since Transaction is slightly modified from ApiTransaction to order data accordingly
-     */
     fun parseTransactions(apiTransactions: List<ApiTransaction>): List<Transaction> {
         val transactions: ArrayList<Transaction> = ArrayList()
 

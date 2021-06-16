@@ -13,6 +13,10 @@ import com.dpeco.bemobilegnb.features.dashboard.app.viewmodel.DashboardViewModel
 import com.dpeco.bemobilegnb.utils.AppConstants
 import java.io.Serializable
 
+/**
+ * Created by dpeco
+ * Main Activity View with main requirements
+ */
 class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
 
     private lateinit var viewModel: DashboardViewModel
@@ -25,6 +29,7 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[DashboardViewModel::class.java]
+        viewModel.initialize()
 
         setObservers()
         setListeners()
@@ -39,19 +44,26 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
             }
         })
 
-        viewModel.showSpinner.observe(this, Observer {
+        viewModel.showMovements.observe(this, Observer {
             with (binding) {
                 when (it) {
                     true -> {
-                        dashboardProgressBar.visibility = View.VISIBLE
-                        dashboardRecyclerview.visibility = View.GONE
-                        dashboardSearchbar.visibility = View.GONE
-                    }
-                    false -> {
-                        dashboardProgressBar.visibility = View.GONE
                         dashboardRecyclerview.visibility = View.VISIBLE
                         dashboardSearchbar.visibility = View.VISIBLE
                     }
+                    false -> {
+                        dashboardRecyclerview.visibility = View.GONE
+                        dashboardSearchbar.visibility = View.GONE
+                    }
+                }
+            }
+        })
+
+        viewModel.showSpinner.observe(this, Observer {
+            with (binding) {
+                when (it) {
+                    true -> {dashboardProgressBar.visibility = View.VISIBLE}
+                    false -> {dashboardProgressBar.visibility = View.GONE}
                 }
             }
         })
@@ -69,7 +81,7 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
     private fun setListeners() {
         with (binding) {
             dashboardEmptyStateButton.setOnClickListener(View.OnClickListener {
-                viewModel.hideEmptyState()
+                viewModel.setShowEmptyState(false)
                 callServices()
             })
 

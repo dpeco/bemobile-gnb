@@ -9,6 +9,9 @@ import com.dpeco.bemobilegnb.R
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import com.dpeco.bemobilegnb.utils.MoneyConversionUtils
 
+/**
+ * Created by dpeco
+ */
 class TransactionsAdapter(private val transactions: List<Transaction>, private val listener: Listener): RecyclerView.Adapter<TransactionsAdapter.TransactionHolder>() {
 
     var filteredTransactions = ArrayList(transactions)
@@ -45,7 +48,7 @@ class TransactionsAdapter(private val transactions: List<Transaction>, private v
         }
 
         fun setData(transaction: Transaction) {
-            val amountString = itemView.context.getString(R.string.currency_eur) + MoneyConversionUtils.getFormattedAmount(transaction.totalAmountInEuro)
+            val amountString = itemView.context.getString(R.string.currency_eur) + MoneyConversionUtils.getFormattedAmountString(transaction.totalAmountInEuro)
             titleView.text = transaction.sku
             amountView.text = itemView.context.getString(R.string.dashboard_transaction_item_balance, amountString)
         }

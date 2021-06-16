@@ -12,6 +12,7 @@ import java.lang.Exception
 class DashboardService {
 
     suspend fun getConversionRates(): List<ConversionRate> {
+        //runs in IO thread
         return withContext(Dispatchers.IO) {
             val mapper = GetConversionRatesMapper()
             try {

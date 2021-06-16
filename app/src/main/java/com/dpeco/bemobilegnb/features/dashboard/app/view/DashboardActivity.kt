@@ -1,18 +1,23 @@
 package com.dpeco.bemobilegnb.features.dashboard.app.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dpeco.bemobilegnb.databinding.ActivityDashboardBinding
 import com.dpeco.bemobilegnb.features.dashboard.app.adapter.TransactionsAdapter
 import com.dpeco.bemobilegnb.features.dashboard.app.viewmodel.DashboardViewModel
+import com.dpeco.bemobilegnb.utils.AppConstants
+import java.io.Serializable
 
 class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
 
     private lateinit var viewModel: DashboardViewModel
     private lateinit var binding: ActivityDashboardBinding
+    private lateinit var adapter: TransactionsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +34,7 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
     private fun setObservers() {
         viewModel.transactions.observe(this, Observer {
             with (binding) {
-                val adapter = TransactionsAdapter(it, this@DashboardActivity)
+                adapter = TransactionsAdapter(it, this@DashboardActivity)
                 dashboardRecyclerview.adapter = adapter
             }
         })
@@ -37,8 +42,16 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
         viewModel.showSpinner.observe(this, Observer {
             with (binding) {
                 when (it) {
-                    true -> {dashboardProgressBar.visibility = View.VISIBLE}
-                    false -> {dashboardProgressBar.visibility = View.GONE}
+                    true -> {
+                        dashboardProgressBar.visibility = View.VISIBLE
+                        dashboardRecyclerview.visibility = View.GONE
+                        dashboardSearchbar.visibility = View.GONE
+                    }
+                    false -> {
+                        dashboardProgressBar.visibility = View.GONE
+                        dashboardRecyclerview.visibility = View.VISIBLE
+                        dashboardSearchbar.visibility = View.VISIBLE
+                    }
                 }
             }
         })
@@ -59,7 +72,25 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
                 viewModel.hideEmptyState()
                 callServices()
             })
+
+            dashboardSearchbar.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText != null) {
+                        filterTransactions(newText)
+                    }
+                    return false
+                }
+            })
+
         }
+    }
+
+    private fun filterTransactions(filterString: String) {
+        adapter.filterTransactions(filterString)
     }
 
     private fun callServices() {
@@ -67,6 +98,8 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
     }
 
     override fun onMovementClick(position: Int) {
-        viewModel.launchMovementDetailActivity(this, position)
+        val intent = Intent(this, TransactionDetailActivity::class.java)
+        intent.putExtra(AppConstants.INTENT_EXTRA_TRANSACTION, viewModel.transactions.value?.get(position) as Serializable)
+        startActivity(intent)
     }
 }

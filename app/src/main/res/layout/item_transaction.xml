@@ -28,4 +28,13 @@
         android:textSize="@dimen/text_size"
         tools:text="t_Sku name"/>
 
+    <TextView
+        android:id="@+id/transaction_item_total_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/text_size"
+        tools:text="t_Sku name"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

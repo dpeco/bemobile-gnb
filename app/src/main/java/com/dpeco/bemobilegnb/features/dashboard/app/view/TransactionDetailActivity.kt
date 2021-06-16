@@ -11,15 +11,25 @@ import com.dpeco.bemobilegnb.features.dashboard.app.viewmodel.TransactionDetailV
 class TransactionDetailActivity: AppCompatActivity() {
 
     private lateinit var viewModel: TransactionDetailViewModel
+    private lateinit var binding: ActivityTransactionDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityTransactionDetailBinding.inflate(layoutInflater)
+        binding = ActivityTransactionDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[TransactionDetailViewModel::class.java]
         viewModel.getExtras(intent)
 
+        setToolbar()
+        setObservers()
+    }
+
+    private fun setToolbar() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun setObservers() {
         viewModel.detailTitleText.observe(this, Observer {
             with (binding) {
                 transactionDetailTitle.text = it
@@ -28,7 +38,8 @@ class TransactionDetailActivity: AppCompatActivity() {
 
         viewModel.balanceText.observe(this, Observer {
             with (binding) {
-                transactionBalanceAmount.text = it
+                val balanceString = getString(com.dpeco.bemobilegnb.R.string.currency_eur) + it
+                transactionBalanceAmount.text = balanceString
             }
         })
 

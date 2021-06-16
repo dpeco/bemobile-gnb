@@ -15,7 +15,7 @@ class MoneyConversionUtils {
          * @return Formatted result
          */
         fun getFormattedAmount(amount: Double): String {
-            val decimalFormat = DecimalFormat("0.00")
+            val decimalFormat = DecimalFormat("#,###,##0.00")
             decimalFormat.roundingMode = RoundingMode.HALF_EVEN
             return decimalFormat.format(amount)
         }

@@ -22,7 +22,7 @@ class TransactionDetailViewModel: ViewModel() {
         if (bundle?.containsKey(AppConstants.INTENT_EXTRA_TRANSACTION) == true) {
             val transaction = bundle.getSerializable(AppConstants.INTENT_EXTRA_TRANSACTION) as Transaction
             detailTitleText.value = transaction.sku
-            balanceText.value = MoneyConversionUtils.getFormattedAmount(transaction.totalAmountInEuro) + " EUR"
+            balanceText.value = MoneyConversionUtils.getFormattedAmount(transaction.totalAmountInEuro)
             transactionMovements.value = transaction.movements
         }
     }

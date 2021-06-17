@@ -3,9 +3,13 @@ package com.dpeco.bemobilegnb.utils
 import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
+/**
+ * Created by dpeco
+ * Stores "static" utilities related with money (formatting and currency conversion)
+ */
 class MoneyConversionUtils {
 
     companion object {
@@ -15,48 +19,62 @@ class MoneyConversionUtils {
          * @param amount amount to format
          * @return Formatted result
          */
-        fun getFormattedAmount(amount: Double): String {
-            val bigDecimal = BigDecimal(amount)
-            bigDecimal.round(MathContext(2, RoundingMode.HALF_EVEN))
-            return "%.2f".format(bigDecimal.toDouble())
+        fun getFormattedAmountString(amount: Double): String {
+            val decimalFormat = DecimalFormat("#,###,##0.00")
+            decimalFormat.roundingMode = RoundingMode.HALF_EVEN
+            return decimalFormat.format(amount)
+        }
+        /**
+         *
+         * Converts amount into a Double, with 2 decimals and RoundingMode.HALF_EVEN
+         * @param amount amount to format
+         * @return Formatted result
+         */
+        fun getFormattedAmountDouble(amount: Double): Double {
+            var decimal = BigDecimal(amount)
+            decimal = decimal.setScale(2, RoundingMode.HALF_EVEN)
+            return decimal.toDouble()
         }
 
         /**
          * Returns the total amount from all the movements of a Transaction object in a single currency
          * @param transaction transaction object to calculate
-         * @param conversionRates ArrayList with all available conversion rates
+         * @param conversionRates List with all available conversion rates
          * @param to result currency we need
          * @return total amount in the desired currency
          */
-        fun getTotalConversionAmount(transaction: Transaction, conversionRates: ArrayList<ConversionRate>, to: String): Double {
+        fun getTotalConversionAmount(transaction: Transaction, conversionRates: List<ConversionRate>, to: String): Double {
             var totalAmountInEuros = 0.0;
             for (movement in transaction.movements) {
-                totalAmountInEuros += getConversionAmount(movement.amount, conversionRates, movement.currency, to)
+                val amountInEuro = getConversionAmount(movement.amount, conversionRates, movement.currency, to)
+                totalAmountInEuros += amountInEuro
             }
-            transaction.totalAmountInEuro = totalAmountInEuros
-            return totalAmountInEuros
+            transaction.totalAmount = totalAmountInEuros
+            return getFormattedAmountDouble(totalAmountInEuros)
         }
 
         /**
          * Converts an amount from one currency to another
          * @param amount amount
-         * @param conversionRates ArrayList with all available conversion rates
+         * @param conversionRates List with all available conversion rates
          * @param from result currency we have right now
          * @param to result currency we need
          * @return total amount in the desired currency
          */
-        fun getConversionAmount(amount: Double, conversionRates: ArrayList<ConversionRate>, from: String, to: String): Double {
+        fun getConversionAmount(amount: Double, conversionRates: List<ConversionRate>, from: String, to: String): Double {
             // In case, if current currency matches with desired return given amount
             if (to == from) {
                 return amount
             }
-            return amount * getConversionRate(conversionRates, from, to, ArrayList())
+
+            val conversionRate = getConversionRate(conversionRates, from, to, ArrayList())
+            return getFormattedAmountDouble(amount * conversionRate)
         }
 
         /**
          * Private method for getConversionAmount logic, recursions to find an available route to the currency we want and obtain the conversion rate
          */
-        private fun getConversionRate(conversionRates: ArrayList<ConversionRate>, from: String, to: String, checkedRates: ArrayList<String>): Double {
+        private fun getConversionRate(conversionRates: List<ConversionRate>, from: String, to: String, checkedRates: ArrayList<String>): Double {
             //first step, get ConversionRates that match our "from"
             val matchingFromConversionRates = getMatchingFromConversionRates(conversionRates, from)
             //second step, attempt to find an option that matches "to"
@@ -83,7 +101,7 @@ class MoneyConversionUtils {
         /**
          * Private method for getConversionRate logic, filters conversionRates with desired from
          */
-        private fun getMatchingFromConversionRates(conversionRates: ArrayList<ConversionRate>, from: String): ArrayList<ConversionRate> {
+        private fun getMatchingFromConversionRates(conversionRates: List<ConversionRate>, from: String): List<ConversionRate> {
             val matchingConversionRates: ArrayList<ConversionRate> = ArrayList()
 
             for (conversionRate in conversionRates) {
@@ -97,7 +115,7 @@ class MoneyConversionUtils {
         /**
          * Private method for getConversionRate logic, filters conversionRates with desired to
          */
-        private fun getMatchingToConversionRates(conversionRates: ArrayList<ConversionRate>, to: String, checkedRates: ArrayList<String>): ArrayList<ConversionRate> {
+        private fun getMatchingToConversionRates(conversionRates: List<ConversionRate>, to: String, checkedRates: ArrayList<String>): List<ConversionRate> {
             val matchingConversionRates: ArrayList<ConversionRate> = ArrayList()
 
             for (conversionRate in conversionRates) {
@@ -108,34 +126,4 @@ class MoneyConversionUtils {
             return matchingConversionRates
         }
     }
-
-    //todo attempt to optimize algorithm, ignored for now
-/*
-    fun getTotalAmountFromTransaction(transaction: Transaction, conversionRates: ArrayList<ConversionRate>, from: String, to: String): Double {
-        var totalAmountInEuros = 0.0;
-
-        var movementsByCurrency: ArrayList<TransactionMovement> = ArrayList()
-
-        for (movement in transaction.movements) {
-            val it: ListIterator<TransactionMovement> = movementsByCurrency.listIterator()
-            while (it.hasNext()) {
-                val movementByCurrency = it.next()
-                if (movement.currency == movementByCurrency.currency) {
-                    movementByCurrency.amount = movement.amount
-                    break
-                }
-            }
-        }
-
-        for (movement in transaction.movements) {
-            if (movementsByCurrency.contains(movement)) {
-                movementsByCurrency.
-            }
-
-            totalAmountInEuros += getConversionAmount(conversionRates, movement.currency, "EUR", movement.amount)
-        }
-        transaction.totalAmountInEuro = totalAmountInEuros
-    }
-
- */
 }

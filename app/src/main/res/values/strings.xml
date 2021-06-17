@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Goliath National Bank</string>
 
-    <string name="currency_eur">€</string>
+    <string name="currency_eur">\ EUR</string>
     <string name="dashboard_title">Stock Keeping Units</string>
     <string name="dashboard_search_bar">Filter by SKU name</string>
     <string name="dashboard_transaction_item_balance">Balance: %1$s</string>

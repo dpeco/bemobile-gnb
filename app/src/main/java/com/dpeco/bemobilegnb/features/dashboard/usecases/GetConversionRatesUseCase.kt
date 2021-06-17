@@ -2,6 +2,7 @@ package com.dpeco.bemobilegnb.features.dashboard.usecases
 
 import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
 import com.dpeco.bemobilegnb.features.dashboard.repository.DashboardService
+import java.util.*
 
 /**
  * Created by dpeco

@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.dpeco.bemobilegnb.databinding.ActivityDashboardBinding
 import com.dpeco.bemobilegnb.features.dashboard.app.adapter.TransactionsAdapter
 import com.dpeco.bemobilegnb.features.dashboard.app.viewmodel.DashboardViewModel
-import com.dpeco.bemobilegnb.utils.AppConstants
+import com.dpeco.bemobilegnb.utils.GnbConstants
 import java.io.Serializable
 
 /**
@@ -111,7 +111,7 @@ class DashboardActivity : AppCompatActivity(), TransactionsAdapter.Listener {
 
     override fun onMovementClick(position: Int) {
         val intent = Intent(this, TransactionDetailActivity::class.java)
-        intent.putExtra(AppConstants.INTENT_EXTRA_TRANSACTION, viewModel.transactions.value?.get(position) as Serializable)
+        intent.putExtra(GnbConstants.INTENT_EXTRA_TRANSACTION, viewModel.transactions.value?.get(position) as Serializable)
         startActivity(intent)
     }
 }

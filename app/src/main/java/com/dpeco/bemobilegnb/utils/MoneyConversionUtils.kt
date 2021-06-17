@@ -6,7 +6,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-
 /**
  * Created by dpeco
  * Stores "static" utilities related with money (formatting and currency conversion)
@@ -50,7 +49,7 @@ class MoneyConversionUtils {
                 val amountInEuro = getConversionAmount(movement.amount, conversionRates, movement.currency, to)
                 totalAmountInEuros += amountInEuro
             }
-            transaction.totalAmountInEuro = totalAmountInEuros
+            transaction.totalAmount = totalAmountInEuros
             return getFormattedAmountDouble(totalAmountInEuros)
         }
 
@@ -127,34 +126,4 @@ class MoneyConversionUtils {
             return matchingConversionRates
         }
     }
-
-    //todo attempt to optimize algorithm, ignored for now
-/*
-    fun getTotalAmountFromTransaction(transaction: Transaction, conversionRates: ArrayList<ConversionRate>, from: String, to: String): Double {
-        var totalAmountInEuros = 0.0;
-
-        var movementsByCurrency: ArrayList<TransactionMovement> = ArrayList()
-
-        for (movement in transaction.movements) {
-            val it: ListIterator<TransactionMovement> = movementsByCurrency.listIterator()
-            while (it.hasNext()) {
-                val movementByCurrency = it.next()
-                if (movement.currency == movementByCurrency.currency) {
-                    movementByCurrency.amount = movement.amount
-                    break
-                }
-            }
-        }
-
-        for (movement in transaction.movements) {
-            if (movementsByCurrency.contains(movement)) {
-                movementsByCurrency.
-            }
-
-            totalAmountInEuros += getConversionAmount(conversionRates, movement.currency, "EUR", movement.amount)
-        }
-        transaction.totalAmountInEuro = totalAmountInEuros
-    }
-
- */
 }

@@ -33,7 +33,7 @@ class GetTransactionsMapper {
             // add product to the list
             if (!found) {
                 val modelTransaction = TransactionMovement(transaction.amount, transaction.currency)
-                val modelProduct = Transaction(transaction.sku, ArrayList())
+                val modelProduct = Transaction(transaction.sku, ArrayList(), 0.0)
                 modelProduct.movements.add(modelTransaction)
                 transactions.add(modelProduct)
             }

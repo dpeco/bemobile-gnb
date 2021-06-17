@@ -8,8 +8,11 @@ import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import com.dpeco.bemobilegnb.features.dashboard.usecases.GetConversionRatesUseCase
 import com.dpeco.bemobilegnb.features.dashboard.usecases.GetTransactionsUseCase
 import com.dpeco.bemobilegnb.GnbApplication
+import com.dpeco.bemobilegnb.features.dashboard.app.model.ConversionRate
+import com.dpeco.bemobilegnb.utils.GnbConstants
 import com.dpeco.bemobilegnb.utils.MoneyConversionUtils
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -38,23 +41,38 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         setShowSpinner(true)
         //async service calls + data management to get the data we want to display
         viewModelScope.launch {
-            val conversionRatesResult = conversionRatesUseCase.invoke()
-            val transactionsResult = transactionsUseCase.invoke()
+            val conversionRatesResult: List<ConversionRate>
+            val transactionsResult: List<Transaction>
+
+            try {
+                conversionRatesResult = conversionRatesUseCase.invoke()
+            } catch (e: Exception) {
+                setShowSpinner(false)
+                setShowEmptyState(true)
+                return@launch
+            }
+
+            try {
+                transactionsResult = transactionsUseCase.invoke()
+            } catch (e: Exception) {
+                setShowSpinner(false)
+                setShowEmptyState(true)
+                return@launch
+            }
 
             setShowSpinner(false)
             if (!conversionRatesResult.isNullOrEmpty() && !transactionsResult.isNullOrEmpty()) {
                 for (transaction in transactionsResult) {
-                    transaction.totalAmountInEuro = MoneyConversionUtils.getTotalConversionAmount(transaction, conversionRatesResult, "EUR")
+                    transaction.totalAmount = MoneyConversionUtils.getTotalConversionAmount(transaction, conversionRatesResult, GnbConstants.CURRENCY_EUR)
                 }
                 transactions.postValue(transactionsResult)
                 setShowMovements(true)
             } else {
-                // show empty state or error if we failed to get the information to work with
+                // show empty state or error if we don't have information to work with
                 setShowEmptyState(true)
             }
         }
     }
-
 
     fun setShowMovements(showMovements: Boolean) {
         this.showMovements.value = showMovements

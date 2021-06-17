@@ -17,6 +17,7 @@
             android:layout_marginTop="@dimen/margin_20dp"
             android:layout_marginHorizontal="@dimen/margin_20dp"
             android:textSize="@dimen/title_size"
+            android:textColor="@color/black"
             tools:text="t_transaction title"/>
 
         <TextView
@@ -27,7 +28,8 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/margin_20dp"
             android:layout_marginHorizontal="@dimen/margin_20dp"
-            android:textSize="20sp"
+            android:textSize="@dimen/subtitle_size"
+            android:textColor="@color/black"
             android:text="Total balance"/>
 
         <TextView
@@ -39,6 +41,7 @@
             android:layout_marginTop="@dimen/margin_5dp"
             android:layout_marginHorizontal="@dimen/margin_20dp"
             android:textSize="@dimen/title_size"
+            android:textColor="@color/black"
             tools:text="t_5003 €"/>
 
         <View

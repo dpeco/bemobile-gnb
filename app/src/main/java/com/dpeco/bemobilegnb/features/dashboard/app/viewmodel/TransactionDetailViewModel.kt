@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dpeco.bemobilegnb.features.dashboard.app.model.Transaction
 import com.dpeco.bemobilegnb.features.dashboard.app.model.TransactionMovement
-import com.dpeco.bemobilegnb.utils.AppConstants
+import com.dpeco.bemobilegnb.utils.GnbConstants
 import com.dpeco.bemobilegnb.utils.MoneyConversionUtils
 
 /**
@@ -22,10 +22,10 @@ class TransactionDetailViewModel: ViewModel() {
 
         val bundle: Bundle? = intent.extras
 
-        if (bundle?.containsKey(AppConstants.INTENT_EXTRA_TRANSACTION) == true) {
-            val transaction = bundle.getSerializable(AppConstants.INTENT_EXTRA_TRANSACTION) as Transaction
+        if (bundle?.containsKey(GnbConstants.INTENT_EXTRA_TRANSACTION) == true) {
+            val transaction = bundle.getSerializable(GnbConstants.INTENT_EXTRA_TRANSACTION) as Transaction
             detailTitleText.value = transaction.sku
-            balanceText.value = MoneyConversionUtils.getFormattedAmountString(transaction.totalAmountInEuro)
+            balanceText.value = MoneyConversionUtils.getFormattedAmountString(transaction.totalAmount)
             transactionMovements.value = transaction.movements
         }
     }
